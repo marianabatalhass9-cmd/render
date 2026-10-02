@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#fff6b7">
+<title>Bee Kind · Monitoramento das abelhas</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--bg:#fff6b7;--card:#fffbd9;--ink:#4a2c17;--mute:#7a5a3f;--honey:#d9962b;--capa:url(imagens/capa.jpg);--img:url(imagens/favo.jpg)}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:"Times New Roman",Times,serif;font-size:1.15rem;line-height:1.55}
+a:focus-visible,button:focus-visible{outline:3px solid var(--ink);outline-offset:3px}
+.wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:2px solid var(--ink)}
+nav .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding-top:12px;padding-bottom:12px}
+.logo{font-size:1.7rem;font-weight:700;font-style:italic}
+.links{display:flex;gap:24px;flex-wrap:wrap}.links a{color:var(--ink);text-decoration:none;font-size:1rem}.links a:hover{text-decoration:underline}
+.hero{min-height:78vh;background:linear-gradient(90deg,rgba(74,44,23,.55),rgba(74,44,23,0) 70%),var(--img) center/cover;display:flex;align-items:center}
+.hero .box{background:var(--bg);border:2px solid var(--ink);box-shadow:8px 8px 0 var(--ink);padding:40px 44px;max-width:560px}
+.hero h1{font-size:clamp(3.4rem,10vw,6.5rem);line-height:.95;font-weight:700;font-style:italic;letter-spacing:-.02em}
+.hero p{margin:16px 0 22px;font-size:1.3rem}
+.pill{display:inline-flex;align-items:center;gap:10px;padding:8px 18px;border:2px solid var(--ink);border-radius:99px;background:var(--card);font-size:1rem}
+.dot{width:11px;height:11px;border-radius:50%;background:var(--honey);border:1.5px solid var(--ink)}.dot.off{background:#c0563c}
+.strip{height:22px;background:repeating-conic-gradient(var(--ink) 0 25%,var(--bg) 0 50%) 0 0/22px 22px;border-block:2px solid var(--ink)}
+section{padding:72px 0}
+h2{font-size:clamp(2rem,4.5vw,3rem);font-weight:700;line-height:1.1}
+.head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:30px}
+.sub{color:var(--mute)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.card{background:var(--card);border:2px solid var(--ink);border-radius:22px;padding:26px;box-shadow:6px 6px 0 var(--ink)}
+.card svg{width:34px;height:34px;stroke:var(--ink);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.card .v{font-size:2.8rem;font-weight:700;line-height:1.1;margin:8px 0 2px}
+.card .n{color:var(--mute);font-size:1rem}
+.band{background:var(--ink);color:var(--bg);border-block:2px solid var(--ink)}
+.band .card{background:var(--bg);color:var(--ink);box-shadow:6px 6px 0 var(--honey);border-color:var(--bg)}
+.chart{width:100%;height:auto;display:block;background:var(--card);border:2px solid var(--ink);border-radius:22px}
+.split{display:grid;grid-template-columns:1fr 1fr;gap:0;border:2px solid var(--ink);border-radius:22px;overflow:hidden;background:var(--card)}
+.split .ph{background:var(--img) 30% center/cover;min-height:320px}
+.split .tx{padding:40px}
+.bars{display:flex;align-items:center;gap:7px;height:130px;margin:22px 0}
+.bars i{width:9px;border-radius:9px;background:var(--ink);transition:height .4s}.bars i:nth-child(3n){background:var(--honey)}
+.cam{aspect-ratio:16/8;background:var(--honey);border:2px solid var(--ink);border-radius:22px;display:grid;place-items:center;text-align:center;overflow:hidden;padding:20px}
+.cam img{width:100%;height:100%;object-fit:cover}.cam svg{width:40px;height:40px;stroke:var(--ink);fill:none;stroke-width:1.6}
+.logos{background:var(--bg);border-bottom:2px solid var(--ink)}.logos .wrap{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;padding-top:12px;padding-bottom:12px}.logos img{height:52px;max-width:100%;mix-blend-mode:multiply}.bee{display:block;max-width:260px;width:100%;margin:18px auto 0;mix-blend-mode:multiply}
+.num{font-size:1.3rem;color:var(--mute)}h3{font-size:1.7rem;line-height:1.2;margin-bottom:8px}.cls{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:20px}.cls div{border:2px solid var(--ink);border-radius:22px;padding:22px;text-align:center;box-shadow:6px 6px 0 var(--ink)}.cls b{display:block;font-size:1.5rem}
+.qr{display:flex;gap:40px;align-items:center;flex-wrap:wrap}
+#qrbox{background:#fff;padding:14px;border:2px solid var(--ink);border-radius:18px;min-width:188px;min-height:188px}
+footer{background:var(--ink);color:var(--bg);padding:50px 0 20px;overflow:hidden}
+footer .big{font-size:clamp(5rem,26vw,20rem);font-weight:700;font-style:italic;line-height:.85;letter-spacing:-.04em;margin-top:24px;color:var(--honey)}
+@media(max-width:760px){.split{grid-template-columns:1fr}.hero .box{padding:28px}section{padding:48px 0}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}
+
+/* ===== estilo baseado no pôster ===== */
+.strip{height:0;background:none;border:0;border-top:3px dotted var(--ink);max-width:1092px;margin:0 auto;opacity:.5}
+.card{position:relative;background:#ffee8a;border:0;border-radius:8px;box-shadow:none}
+.cls div{border:0;border-radius:6px;box-shadow:none}
+.split{border:0;border-radius:8px}.chart,.cam,#qrbox{border:0;border-radius:8px}.cam{background:#f6d060}
+.band{background:transparent;color:var(--ink);border:0}
+.num{font-size:2.8rem;line-height:.9;color:var(--ink)}
+.hero .box{border:0;box-shadow:none;background:rgba(255,246,183,.94);text-align:center;margin:0 auto;border-radius:8px}
+.hero .wrap{display:flex;justify-content:center}.hero h1{font-style:normal;font-size:clamp(3.6rem,11vw,7rem)}
+.hero .no{font-size:1.5rem;color:var(--mute);margin-top:-6px}
+footer{background:transparent;color:var(--ink);border-top:3px dotted var(--ink)}footer .big{color:#f2c744}
+.c{text-align:center}.intro{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:center}.intro p{margin-top:16px;font-size:1.3rem;max-width:34ch}
+.arch{aspect-ratio:4/5;border-radius:999px 999px 14px 14px;background:center/cover;max-width:400px;margin-left:auto;width:100%}
+.marq{background:var(--ink);color:var(--bg);overflow:hidden;white-space:nowrap;padding:12px 0;font-style:italic;font-size:1.25rem;letter-spacing:.08em;text-transform:uppercase}.marq span{margin:0 26px}
+.trio{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:36px;margin-top:44px;text-align:center}.trio article{display:flex;flex-direction:column;align-items:center}
+.circ{width:220px;height:220px;border-radius:50%;background:#ffee8a center/cover no-repeat;display:grid;place-items:center;overflow:hidden;margin-bottom:18px}.circ img{width:90%;mix-blend-mode:multiply}.trio ol{text-align:left;padding-left:1.2em}
+table.cl{width:100%;max-width:760px;margin:28px auto 0;border-collapse:separate;border-spacing:0;border:2px solid var(--ink);border-radius:12px;overflow:hidden;font-size:1.3rem}
+.cl th,.cl td{padding:16px 22px;text-align:left}.cl th{background:var(--ink);color:var(--bg)}.cl td{border-top:2px solid var(--ink)}
+.cl .ok td{background:#fff3a8}.cl .warn td{background:#f2c744}.cl .bad td{background:#7a4a24;color:#fff6b7}
+.src{text-align:right;max-width:760px;margin:8px auto 0;color:var(--mute)}.res{max-width:760px;text-align:center}
+@media(max-width:760px){.intro{grid-template-columns:1fr}.arch{margin:0 auto}}
+
+.eb{letter-spacing:.14em;text-transform:uppercase;font-size:.85rem;color:var(--mute);margin-bottom:6px}.res.card{padding:32px 26px}
+.team{list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px;margin-top:28px}.team li{background:#ffee8a;border-radius:8px;padding:16px 18px;text-align:center}
+.info{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-top:16px}.info div{border:2px solid var(--ink);border-radius:8px;padding:14px 18px}.info dt{font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}.info dd{margin:0}
+/* ===== versão responsiva (celular + desktop) ===== */
+html{-webkit-text-size-adjust:100%;scroll-padding-top:70px}
+body{padding-left:env(safe-area-inset-left,0);padding-right:env(safe-area-inset-right,0)}
+img,svg{max-width:100%}
+@media(max-width:760px){
+ html,body{overflow-x:hidden}
+ body{font-size:1.05rem}
+ .wrap{padding:0 18px}
+ .logos .wrap{flex-wrap:nowrap;gap:12px}.logos img{height:auto}.logos img:first-child{width:61%}.logos img:last-child{width:34%}
+ nav .wrap{flex-direction:column;align-items:flex-start;gap:4px;padding-top:8px;padding-bottom:4px}
+ .logo{font-size:1.4rem}
+ .links{width:100%;flex-wrap:nowrap;overflow-x:auto;white-space:nowrap;gap:6px;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+ .links::-webkit-scrollbar{display:none}
+ .links a{padding:10px 10px;flex:none}
+ .hero{min-height:0;padding:44px 0}.hero .box{width:100%;padding:26px 20px;box-shadow:none}
+ .hero h1{font-size:clamp(3.2rem,17vw,4.6rem)}.hero p{font-size:1.1rem}
+ .pill{max-width:100%;border-radius:18px;text-align:left}
+ section{padding:44px 0}
+ h2{font-size:1.8rem}.head{margin-bottom:20px}
+ .grid{grid-template-columns:1fr 1fr;gap:12px}
+ .card{padding:16px}.card .v{font-size:1.6rem;overflow-wrap:anywhere}.card .n{font-size:.9rem}.card svg{width:28px;height:28px}
+ .chart{height:190px}.chart polyline{vector-effect:non-scaling-stroke}
+ .cam{aspect-ratio:4/3;padding:14px;font-size:.95rem}
+ .intro{gap:28px}.intro p{font-size:1.15rem;max-width:none}.arch{max-width:300px}
+ .marq{font-size:1rem}
+ .circ{width:180px;height:180px}.trio{gap:40px}
+ table.cl{font-size:1.1rem}.cl th,.cl td{padding:12px 14px}
+ .qr{flex-direction:column;align-items:center;text-align:center;gap:20px}
+ footer{padding:36px 0 14px}footer .big{font-size:21vw}
+}
+@media(max-width:480px){.bars{gap:4px;max-width:100%;justify-content:center}.bars i{width:8px}}
+@media(max-width:340px){.grid{grid-template-columns:1fr}}
+
+/* ===== alinhamento: tudo centralizado no mesmo eixo ===== */
+body{text-align:center}
+.logos .wrap{justify-content:center;gap:48px}
+nav .wrap{justify-content:center;align-items:center;gap:12px 36px}
+.links{justify-content:safe center}
+.head{flex-direction:column;align-items:center;text-align:center;gap:6px}
+.head h2,.head .sub,.head .tag{margin:0 auto}
+.intro{grid-template-columns:1fr;justify-items:center;gap:36px}.intro p{margin-left:auto;margin-right:auto}
+.arch{margin:0 auto;max-width:320px}
+.card{text-align:center}.card svg{display:block;margin:0 auto}
+.card .v{font-size:clamp(1.6rem,2.6vw,2.4rem);overflow-wrap:anywhere}
+.stat,.grid .card{display:flex;flex-direction:column;align-items:center}
+.bars{justify-content:center}.chart+p,.chart+.sub{text-align:center}
+#audio .card{display:flex;flex-direction:column;align-items:center;max-width:760px;margin:0 auto}
+.trio ol{list-style-position:inside;padding:0;text-align:center}
+.res{margin:0 auto}
+.cl th,.cl td{text-align:center}.src{text-align:center}
+.qr{flex-direction:column;align-items:center;text-align:center;gap:22px}.qr p{margin-left:auto;margin-right:auto}
+.team,.info{display:flex;flex-wrap:wrap;justify-content:center}
+.team li{flex:0 1 210px}.info div{flex:1 1 240px;max-width:340px;text-align:center}
+footer{text-align:center}footer .big{text-align:center}
+
+/* foto da capa */
+.hero{background:var(--capa) center/cover no-repeat;min-height:0;padding:56px 0}
+@media(max-width:760px){.hero{padding:36px 0}}
+</style>
+</head>
+<body>
+<div class="logos"><div class="wrap"><img src="imagens/logo-ete.jpg" alt="ETE FMC e Rede Jesuíta de Educação"><img src="imagens/logo-projete.jpg" alt="PROJETE, Feira de Projetos Tecnológicos da ETE FMC"></div></div>
+<nav><div class="wrap"><div class="logo">BeeKind</div>
+<div class="links"><a href="#sobre">Projeto</a><a href="#classificacao">Classificação</a><a href="#dashboard">Dashboard</a><a href="#historico">Histórico</a><a href="#audio">Áudio</a><a href="#camera">Câmera</a><a href="#compartilhar">Compartilhar</a><a href="#equipe">Equipe</a></div></div></nav>
+
+<header class="hero"><div class="wrap"><div class="box">
+<h1>Bee Kind</h1><div class="no">Equipe 2202</div>
+<p><strong>A colmeia fala, só precisamos escutar.</strong><br>Acompanhe a saúde da colmeia por sensores, análise acústica e câmera.</p>
+<span class="pill"><span class="dot" id="hdot"></span><span id="hstatus">Conectando à colmeia…</span></span>
+</div></div></header>
+
+<div class="strip"></div>
+<section id="sobre"><div class="wrap intro"><div><div class="eb">O projeto</div><h2>A colmeia fala, só precisamos escutar</h2>
+<p>A Bee Kind é uma colmeia eletrônica que visa monitorar o bem-estar das abelhas, com sensores que identificam o som, temperatura e umidade a tempo real.</p></div>
+<div class="arch" role="img" aria-label="Abelhas voando perto de uma colmeia" style="background-image:url(imagens/arco.jpg)"></div></div></section>
+<div class="marq" aria-hidden="true"><span>A colmeia fala, só precisamos escutar</span>·<span>A colmeia fala, só precisamos escutar</span>·<span>A colmeia fala, só precisamos escutar</span>·<span>A colmeia fala, só precisamos escutar</span>·<span>A colmeia fala, só precisamos escutar</span>·<span>A colmeia fala, só precisamos escutar</span>·<span>A colmeia fala, só precisamos escutar</span>·<span>A colmeia fala, só precisamos escutar</span>·</div>
+<section id="projeto"><div class="wrap"><h2 class="c">Como a Bee Kind cuida da colmeia</h2>
+<div class="trio">
+<article><div class="circ" role="img" aria-label="Abelhas no favo" style="background-image:var(--img)"></div><div class="num">1.</div><h3>O problema</h3><p>Para saber se as abelhas estão bem, é preciso abrir a colmeia. Porém, isso gera estresse e prejudica o trabalho delas na produção do mel.</p><p class="n sub" style="margin-top:8px">78% dos apicultores confirmam esse problema. Bee Kind, 2026.</p></article>
+<article><div class="circ"><img src="imagens/abelha.jpg" alt="Ilustração de uma abelha"></div><div class="num">2.</div><h3>A solução</h3><p>Com a ajuda da eletrônica, podemos "escutar" o som da colmeia e descobrir como as abelhas estão.</p></article>
+<article><div class="circ" role="img" aria-label="Abelhas sobre favo em formato de coração" style="background-image:url(imagens/coracao.jpg)"></div><div class="num">3.</div><h3>Funcionamento</h3><ol><li>Um sensor escuta o som da colmeia;</li><li>envia essa informação para um sistema;</li><li>o sistema identifica se está tudo bem;</li><li>o apicultor recebe um aviso no site Bee Kind.</li></ol></article>
+</div></div></section>
+<div class="strip"></div>
+<section id="classificacao"><div class="wrap"><h2 class="c"><span class="num" style="font-size:inherit">4.</span> Classificação</h2>
+<table class="cl"><thead><tr><th>Classificação</th><th>Som da colmeia</th></tr></thead><tbody>
+<tr class="ok"><td>Tudo bem</td><td>Som calmo</td></tr><tr class="warn"><td>Algo errado</td><td>Som agitado</td></tr><tr class="bad"><td>Perigo</td><td>Som desorganizado</td></tr></tbody></table>
+<p class="src">Kanelis et al., 2023</p>
+</div></section>
+<section id="resultados"><div class="wrap"><div class="res card"><div class="num">5.</div><h3>Resultados</h3><p>As abelhas não são incomodadas, o apicultor acompanha o tempo todo e os problemas são descobertos mais rápido.</p></div></div></section>
+<div class="strip"></div>
+<section id="dashboard"><div class="wrap">
+<div class="head"><div><div class="eb">Monitoramento ao vivo</div><h2>Como está a colmeia?</h2></div><span class="sub"><span class="dot" id="d2" style="display:inline-block"></span> <span id="s2">Aguardando</span></span></div>
+<div class="grid">
+<div class="card"><svg viewBox="0 0 24 24"><path d="M14 14.8V4a2 2 0 0 0-4 0v10.8a4 4 0 1 0 4 0z"/></svg><div>Temperatura</div><div class="v" id="vt">–</div><div class="n" id="nt">–</div></div>
+<div class="card"><svg viewBox="0 0 24 24"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg><div>Umidade</div><div class="v" id="vh">–</div><div class="n" id="nh">–</div></div>
+<div class="card"><svg viewBox="0 0 24 24"><path d="M5 9v6M9 5v14M13 8v8M17 10v4M21 11v2"/></svg><div>Frequência das abelhas</div><div class="v" id="vf">–</div><div class="n" id="nf">–</div></div>
+<div class="card"><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><div>Câmera</div><div class="v" id="vc">–</div><div class="n" id="nc">–</div></div>
+</div></div></section>
+<section id="historico" class="band"><div class="wrap">
+<div class="head"><div><h2>Histórico da colmeia</h2><div style="opacity:.8">Variações observadas nas últimas leituras.</div></div></div>
+<svg class="chart" id="chart" viewBox="0 0 900 220" preserveAspectRatio="none" role="img" aria-label="Gráfico de temperatura e umidade"></svg>
+<p style="margin-top:12px;font-size:1rem">━ Temperatura (°C, marrom) &nbsp; ━ Umidade (%, mel)</p>
+</div></section>
+<section id="audio"><div class="wrap"><div class="head"><h2>Análise de áudio</h2><span class="sub" id="afreq">–</span></div>
+<div class="card"><div style="font-size:1.4rem;font-weight:700" id="astate">–</div><div class="bars" id="bars" aria-hidden="true"></div><p id="atext">–</p><p class="sub" id="ahint">–</p></div></div></section>
+<section id="camera"><div class="wrap"><div class="head"><div><h2>Câmera da colmeia</h2><div class="sub">Uma janela tranquila para observar a rotina das abelhas.</div></div><span class="sub" id="camtag">Aguardando</span></div>
+<div class="cam" id="cam"><div><svg viewBox="0 0 24 24"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg><p style="margin-top:8px">Imagem da câmera aguardando conexão</p><p>A transmissão aparecerá aqui quando o dispositivo estiver ativo.</p></div></div></div></section>
+<div class="strip"></div>
+<section id="compartilhar" class="band"><div class="wrap"><div class="qr"><div id="qrbox"></div>
+<div><h2>Acesse pelo celular</h2><p style="margin-top:10px;max-width:38ch">Aponte a câmera para o QR code e acompanhe a colmeia em tempo real. O acesso é aberto a todos.</p></div></div></div></section>
+<div class="strip"></div>
+<section id="equipe"><div class="wrap"><h2 class="c">Equipe</h2>
+<ul class="team"><li>Alyce Eduarda Veloso</li><li>Isabelle Caroline Barbosa da Costa</li><li>Fernanda Lavínia Goria</li><li>Maria Mel Teólis Bernardes</li><li>Mariana Batalha Silva de Souza</li></ul>
+<dl class="info"><div><dt>Orientadora</dt><dd>Ana Letícia Gomes Gonçalves</dd></div><div><dt>Instituição</dt><dd>ETE FMC (Escola Técnica de Eletrônica Francisco Moreira da Costa)</dd></div><div><dt>Número da inscrição</dt><dd>2202MC</dd></div></dl></div></section>
+<footer><div class="wrap"><p><strong>Bee Kind</strong> · projeto de monitoramento e cuidado com as abelhas</p>
+<p style="margin-top:12px;font-size:.95rem"><strong>Fontes:</strong> Bee Kind, pesquisa de campo, 2026; A.B.E.L.H.A., disponível em abelha.org.br (acesso em 26 jun. 2026); KANELIS, D. et al. Decoding the behavior of a queenless colony using sound signals. Biology, 2023.</p>
+<div class="big">beekind</div></div></footer>
+
+<script>
+const CONFIG={
+  DATA_URL:"",   // ex.: "http://192.168.0.50/data" → JSON {"temp":28.4,"hum":62,"freq":235}. Vazio = demonstração
+  CAM_URL:"",    // ex.: "http://192.168.0.51:81/stream"
+  SITE_URL:"",   // endereço público do site (para o QR). Vazio = endereço atual
+  FIREBASE_URL:"https://bee-kind-2202-default-rtdb.firebaseio.com",       // Realtime Database do projeto
+  THINGSPEAK_CHANNEL:"",  // ID do canal público do ThingSpeak (field1=temp, field2=umid, field3=freq)
+  READ_KEY:"",           // só se o canal for privado
+  INTERVAL_MS:3000
+};
+const $=id=>document.getElementById(id),hist=[],t0=Date.now();
+const demo=()=>{const s=(Date.now()-t0)/1000;return{temp:28.4+Math.sin(s/20)*.8+Math.random()*.2,hum:62+Math.sin(s/30)*2+Math.random()*.4,freq:235+Math.sin(s/15)*12}};
+function render(d,online){
+  const oT=d.temp>=20&&d.temp<=36,oH=d.hum>=50&&d.hum<=75,oF=d.freq>=200&&d.freq<=300;
+  $('vt').textContent=d.temp.toFixed(1).replace('.',',')+' °C';$('nt').textContent=oT?'Condição adequada':'Fora do ideal';
+  $('vh').textContent=Math.round(d.hum)+'%';$('nh').textContent=oH?'Condição adequada':'Fora do ideal';
+  $('vf').textContent=Math.round(d.freq)+' Hz';$('nf').textContent=oF?'Padrão normal':'Padrão alterado';
+  $('hstatus').textContent=online?'Colmeia conectada · leitura em tempo real':'Modo demonstração · dados simulados';
+  $('s2').textContent=online?'Colmeia conectada':'Demonstração';
+  $('hdot').classList.remove('off');$('d2').classList.remove('off');
+  $('afreq').textContent=Math.round(d.freq)+' Hz · frequência predominante';
+  $('astate').textContent=oF?'Normal · padrão constante':'Atenção · padrão alterado';
+  $('atext').textContent=oF?'A assinatura sonora indica uma colmeia calma, ativa e sem alteração acústica relevante.':'O som da colmeia saiu do padrão habitual. Vale observar com mais atenção.';
+  $('ahint').textContent=oF?'Condição possível: atividade regular de forrageamento.':'Possíveis causas: calor, agitação ou falta de rainha.';
+  const b=$('bars');if(!b.children.length)for(let i=0;i<19;i++)b.appendChild(document.createElement('i'));
+  [...b.children].forEach((e,k)=>e.style.height=(25+Math.abs(Math.sin(k*.9+d.freq/40))*100)+'px');
+  hist.push(d);if(hist.length>60)hist.shift();draw();
+}
+const line=(k,mn,mx,c)=>hist.length<2?'':`<polyline fill="none" stroke="${c}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" points="${hist.map((d,i)=>`${i/(hist.length-1)*860+20},${200-(d[k]-mn)/(mx-mn)*180}`).join(' ')}"/>`;
+function draw(){$('chart').innerHTML=[0,1,2,3].map(i=>`<line x1="20" x2="880" y1="${20+i*60}" y2="${20+i*60}" stroke="#4a2c1733"/>`).join('')+line('temp',20,40,'#4a2c17')+line('hum',40,80,'#d9962b')}
+let loaded=false,lastTs=0;
+async function tick(){
+  const C=CONFIG;
+  if(!C.DATA_URL&&!C.THINGSPEAK_CHANNEL&&!C.FIREBASE_URL)return render(demo(),false);
+  try{
+    if(C.FIREBASE_URL){
+      const u=C.FIREBASE_URL.replace(/\/$/,'')+'/colmeia';
+      if(!loaded){loaded=true;const h=await(await fetch(u+'/historico.json?orderBy=%22$key%22&limitToLast=60')).json();Object.values(h||{}).filter(x=>x&&isFinite(x.temp+x.hum+x.freq)).forEach(x=>hist.push(x));lastTs=hist.length?hist[hist.length-1].ts:0}
+      const d=await(await fetch(u+'/atual.json',{cache:'no-store'})).json();
+      if(!d)throw new Error('sem dados');
+      render(d,true);if(d.ts===lastTs){hist.pop();draw()}lastTs=d.ts;
+      const min=(Date.now()-d.ts)/60000;if(min>3)$('hstatus').textContent='Última leitura há '+Math.round(min)+' min';
+    }else if(C.THINGSPEAK_CHANNEL){
+      const k=C.READ_KEY?'api_key='+C.READ_KEY+'&':'',base='https://api.thingspeak.com/channels/'+C.THINGSPEAK_CHANNEL+'/feeds',m=f=>({temp:+f.field1,hum:+f.field2,freq:+f.field3});
+      if(!loaded){loaded=true;const h=await(await fetch(base+'.json?'+k+'results=60')).json();h.feeds.map(m).filter(x=>isFinite(x.temp+x.hum+x.freq)).forEach(x=>hist.push(x))}
+      const f=await(await fetch(base+'/last.json?'+k,{cache:'no-store'})).json();
+      render(m(f),true);
+      const min=(Date.now()-new Date(f.created_at))/60000;if(min>3)$('hstatus').textContent='Última leitura há '+Math.round(min)+' min';
+    }else{const r=await fetch(C.DATA_URL,{cache:'no-store'});render(await r.json(),true)}
+  }catch(e){$('hstatus').textContent='Sem sinal da colmeia. Tentando de novo…';$('s2').textContent='Sem sinal';$('hdot').classList.add('off');$('d2').classList.add('off')}
+}
+function camera(){
+  if(!CONFIG.CAM_URL){$('vc').textContent='Aguardando';$('nc').textContent='Câmera não configurada';return}
+  const img=new Image();img.alt='Imagem ao vivo da colmeia';
+  img.onload=()=>{$('cam').innerHTML='';$('cam').appendChild(img);$('camtag').textContent='Sinal disponível';$('vc').textContent='Disponível';$('nc').textContent='Câmera conectada'};
+  img.onerror=()=>{$('camtag').textContent='Sem sinal';$('vc').textContent='Sem sinal';$('nc').textContent='Tentando reconectar…';setTimeout(camera,5000)};
+  img.src=CONFIG.CAM_URL}
+try{new QRCode($('qrbox'),{text:CONFIG.SITE_URL||location.href,width:160,height:160,colorDark:'#4a2c17',colorLight:'#ffffff'})}catch(e){$('qrbox').textContent='QR indisponível'}
+camera();tick();setInterval(tick,(CONFIG.THINGSPEAK_CHANNEL||CONFIG.FIREBASE_URL)?10000:CONFIG.INTERVAL_MS);
+</script>
+</body>
+</html>

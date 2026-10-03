@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bee Kind · Transmitir câmera</title>
+<style>body{font-family:Georgia,serif;background:#fff6b7;color:#4a2c17;text-align:center;padding:20px}video{max-width:100%;border:2px solid #4a2c17;border-radius:12px}button{font:inherit;font-size:1.2rem;padding:12px 24px;border:2px solid #4a2c17;background:#fffbd9;border-radius:999px;cursor:pointer}#st{margin:16px;font-size:1.1rem}</style></head>
+<body>
+<h1>Bee Kind · Transmitir câmera</h1>
+<p>Deixe esta página aberta, e visível na tela, no computador que tem a webcam.</p>
+<video id="v" autoplay playsinline muted></video><br><br>
+<button id="b">Ligar câmera</button>
+<div id="st">Parada.</div>
+<canvas id="c" width="320" height="240" hidden></canvas>
+<script>
+const DB="https://bee-kind-2202-default-rtdb.firebaseio.com/colmeia/camera.json";
+const v=document.getElementById('v'),c=document.getElementById('c'),st=document.getElementById('st'),b=document.getElementById('b');
+let timer=null;
+async function send(){
+  try{
+    c.getContext('2d').drawImage(v,0,0,320,240);
+    const img=c.toDataURL('image/jpeg',0.5);
+    const r=await fetch(DB,{method:'PUT',body:JSON.stringify({img:img,ts:Date.now()})});
+    st.textContent=r.ok?'Transmitindo · última foto às '+new Date().toLocaleTimeString('pt-BR'):'Erro '+r.status+' (confira as regras do Firebase)';
+  }catch(e){st.textContent='Erro de conexão. Tentando de novo…'}
+}
+b.onclick=async()=>{
+  try{
+    v.srcObject=await navigator.mediaDevices.getUserMedia({video:{width:640,height:480}});
+    await v.play();
+    clearInterval(timer);timer=setInterval(send,5000);send();
+    b.textContent='Câmera ligada';
+  }catch(e){st.textContent='Não consegui abrir a câmera. Clique em Permitir quando o navegador perguntar.'}
+};
+</script></body></html>

@@ -344,6 +344,8 @@ const CONFIG={
   DATA_URL:"",   // ex.: "http://192.168.0.50/data" → JSON {"temp":28.4,"hum":62,"freq":235}. Vazio = demonstração
   CAM_URL:"",    // ex.: "http://192.168.0.51:81/stream"
   SITE_URL:"",   // endereço público do site (para o QR). Vazio = endereço atual
+  FIREBASE_DB_URL:"https://bee-kind-2202-default-rtdb.firebaseio.com",  // Realtime Database (mesmo DB_URL do ESP32)
+  FIREBASE_PATH:"",   // opcional: caminho onde o ESP32 grava (ex.: \"colmeia\"). Vazio = o site procura sozinho a leitura mais recente
   THINGSPEAK_CHANNEL:"",  // ID do canal público do ThingSpeak (field1=temp, field2=umid, field3=freq) → recomendado
   READ_KEY:"",           // só se o canal for privado (ficará visível no site, prefira canal público)
   INTERVAL_MS:3000
@@ -368,19 +370,50 @@ function render(d,online){
 }
 const line=(k,mn,mx,c)=>hist.length<2?'':`<polyline fill="none" stroke="${c}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round" points="${hist.map((d,i)=>`${i/(hist.length-1)*860+20},${200-(d[k]-mn)/(mx-mn)*180}`).join(' ')}"/>`;
 function draw(){$('chart').innerHTML=[0,1,2,3].map(i=>`<line x1="20" x2="880" y1="${20+i*60}" y2="${20+i*60}" stroke="#4a2c1733"/>`).join('')+line('temp',20,40,'#4a2c17')+line('hum',40,80,'#d9962b')}
+const FB_KEYS={temp:['temp','temperatura','temperature','t'],hum:['hum','umidade','humidity','h'],freq:['freq','frequencia','frequência','frequency','hz','som']};
+const fbGet=(o,names)=>{for(const k of Object.keys(o))if(names.includes(k.toLowerCase()))return o[k]};
+const fbRead=o=>{if(!o||typeof o!=='object')return null;const d={temp:+fbGet(o,FB_KEYS.temp),hum:+fbGet(o,FB_KEYS.hum),freq:+fbGet(o,FB_KEYS.freq)};return isFinite(d.temp+d.hum+d.freq)?d:null};
+async function fbJson(path,q){
+  const base=CONFIG.FIREBASE_DB_URL.replace(/\/$/,'');
+  const r=await fetch(base+(path?'/'+path:'')+'.json'+(q||''),{cache:'no-store'});
+  if(r.status===401||r.status===403)throw new Error('perm');
+  if(!r.ok)throw new Error('HTTP '+r.status);
+  return r.json();
+}
+async function fbLatest(){
+  let path=(CONFIG.FIREBASE_PATH||'').replace(/^\/|\/$/g,'');
+  for(let depth=0;depth<5;depth++){
+    const sh=await fbJson(path,'?shallow=true');
+    if(sh===null)throw new Error('vazio');
+    const keys=Object.keys(sh);
+    if(!keys.length)throw new Error('vazio');
+    // se algum valor não for "true", os campos estão direto neste nó
+    if(keys.some(k=>sh[k]!==true)){
+      const d=fbRead(await fbJson(path));
+      if(!d)throw new Error('campos');
+      return d;
+    }
+    // senão são nós filhos (ex.: histórico com push): desce no mais recente
+    keys.sort();path=(path?path+'/':'')+keys[keys.length-1];
+  }
+  throw new Error('profundidade');
+}
 let loaded=false;
 async function tick(){
   const C=CONFIG;
-  if(!C.DATA_URL&&!C.THINGSPEAK_CHANNEL)return render(demo(),false);
+  if(!C.DATA_URL&&!C.THINGSPEAK_CHANNEL&&!C.FIREBASE_DB_URL)return render(demo(),false);
   try{
-    if(C.THINGSPEAK_CHANNEL){
+    if(C.FIREBASE_DB_URL){
+      const d=await fbLatest();
+      render(d,true);
+    }else if(C.THINGSPEAK_CHANNEL){
       const k=C.READ_KEY?'api_key='+C.READ_KEY+'&':'',base='https://api.thingspeak.com/channels/'+C.THINGSPEAK_CHANNEL+'/feeds',m=f=>({temp:+f.field1,hum:+f.field2,freq:+f.field3});
       if(!loaded){loaded=true;const h=await(await fetch(base+'.json?'+k+'results=60')).json();h.feeds.map(m).filter(x=>isFinite(x.temp+x.hum+x.freq)).forEach(x=>hist.push(x))}
       const f=await(await fetch(base+'/last.json?'+k,{cache:'no-store'})).json();
       render(m(f),true);
       const min=(Date.now()-new Date(f.created_at))/60000;if(min>3)$('hstatus').textContent='Última leitura há '+Math.round(min)+' min';
     }else{const r=await fetch(C.DATA_URL,{cache:'no-store'});render(await r.json(),true)}
-  }catch(e){$('hstatus').textContent='Sem sinal da colmeia. Tentando de novo…';$('s2').textContent='Sem sinal';$('hdot').classList.add('off');$('d2').classList.add('off')}
+  }catch(e){console.error('beekind:',e);const em={perm:'Firebase bloqueou a leitura (ajuste as regras do banco). ',vazio:'Firebase sem dados ainda. ',campos:'Dados encontrados, mas sem temp/hum/freq. '};$('hstatus').textContent=(em[e.message]||'')+'Sem sinal da colmeia. Tentando de novo…';$('s2').textContent='Sem sinal';$('hdot').classList.add('off');$('d2').classList.add('off')}
 }
 function camera(){
   if(!CONFIG.CAM_URL){$('vc').textContent='Aguardando';$('nc').textContent='Câmera não configurada';return}
